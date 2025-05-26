@@ -4,6 +4,13 @@
 
 This guide will walk you through setting up and running the Inventory Management System on your local PC. The application is a Python-based desktop app with a MySQL backend, using `tkinter` and `ttkbootstrap` for the GUI. It allows you to manage products, warehouses, inventory, and more.
 
+## Group 5 Members
+
+- Gonzales, John Lemar
+- Zurita, Rishi
+- Pineda, Joshua
+- Lim, Brandon
+
 ## Prerequisites
 
 Before starting, ensure you have the following installed on your system:
