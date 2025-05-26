@@ -304,7 +304,7 @@ class InventoryApp:
         self.root = root
         self.root.title("Inventory Management System")
         self.style = ttk.Style(theme="flatly")
-        self.db = DatabaseManager(host="127.0.0.1", user="root", password="22551566523", database="inventory_db")
+        self.db = DatabaseManager(host="127.0.0.1", user="root", password="", database="inventory_db")
         self.current_user = None
         self.role = None
 
