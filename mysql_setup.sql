@@ -1,6 +1,11 @@
+-- Drop the database if it exists (careful: this deletes all data)
+DROP DATABASE IF EXISTS inventory_db;
+
+-- Create the database
 CREATE DATABASE IF NOT EXISTS inventory_db;
 USE inventory_db;
 
+-- Create the products table
 CREATE TABLE products (
     product_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -8,12 +13,14 @@ CREATE TABLE products (
     category VARCHAR(100)
 );
 
+-- Create the warehouses table
 CREATE TABLE warehouses (
     warehouse_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     location VARCHAR(255)
 );
 
+-- Create the locations table
 CREATE TABLE locations (
     location_id INT AUTO_INCREMENT PRIMARY KEY,
     warehouse_id INT,
@@ -23,6 +30,7 @@ CREATE TABLE locations (
     FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id) ON DELETE CASCADE
 );
 
+-- Create the inventory table
 CREATE TABLE inventory (
     inventory_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
@@ -33,6 +41,7 @@ CREATE TABLE inventory (
     FOREIGN KEY (location_id) REFERENCES locations(location_id) ON DELETE CASCADE
 );
 
+-- Create the serial_batches table
 CREATE TABLE serial_batches (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
@@ -43,6 +52,7 @@ CREATE TABLE serial_batches (
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
 );
 
+-- Create the stock_movements table
 CREATE TABLE stock_movements (
     movement_id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
@@ -56,6 +66,7 @@ CREATE TABLE stock_movements (
     FOREIGN KEY (to_location) REFERENCES locations(location_id) ON DELETE SET NULL
 );
 
+-- Create the reorder_rules table
 CREATE TABLE reorder_rules (
     product_id INT,
     min_threshold INT,
@@ -65,6 +76,7 @@ CREATE TABLE reorder_rules (
     PRIMARY KEY (product_id)
 );
 
+-- Create the audit_logs table
 CREATE TABLE audit_logs (
     audit_id INT AUTO_INCREMENT PRIMARY KEY,
     inventory_id INT,
@@ -75,6 +87,7 @@ CREATE TABLE audit_logs (
     FOREIGN KEY (inventory_id) REFERENCES inventory(inventory_id) ON DELETE CASCADE
 );
 
+-- Create the users table
 CREATE TABLE users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE,
