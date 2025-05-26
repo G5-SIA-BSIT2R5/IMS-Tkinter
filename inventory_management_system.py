@@ -244,7 +244,7 @@ class DatabaseManager:
     def get_inventory_summary(self):
         try:
             self.cursor.execute('''
-                SELECT p.name, i.quantity, i.status, w.name, l.zone, l.aisle, l.bin, i.inventory_id, p.product_id
+                SELECT i.inventory_id, p.product_id, p.name, i.quantity, i.status, w.name, l.zone, l.aisle, l.bin                
                 FROM inventory i
                 JOIN products p ON i.product_id = p.product_id
                 JOIN locations l ON i.location_id = l.location_id
@@ -304,7 +304,7 @@ class InventoryApp:
         self.root = root
         self.root.title("Inventory Management System")
         self.style = ttk.Style(theme="flatly")
-        self.db = DatabaseManager(host="127.0.0.1", user="root", password="", database="inventory_db")
+        self.db = DatabaseManager(host="127.0.0.1", user="root", password="22551566523", database="inventory_db")
         self.current_user = None
         self.role = None
 
@@ -844,6 +844,7 @@ class InventoryApp:
         ttk.Button(form, text="Inventory Summary", command=self.inventory_summary_report, bootstyle="info").grid(row=0, column=0, padx=5, pady=5)
         ttk.Button(form, text="Expiry Alerts", command=self.expiry_alerts_report, bootstyle="info").grid(row=0, column=1, padx=5, pady=5)
         ttk.Button(form, text="Reorder Alerts", command=self.reorder_alerts_report, bootstyle="info").grid(row=0, column=2, padx=5, pady=5)
+        ttk.Button(form, text="Stock Movements", command=self.stock_movements_report, bootstyle="info").grid(row=0, column=4, padx=5, pady=5)
         if self.role == "Admin":
             ttk.Button(form, text="Audit Logs", command=self.audit_logs_report, bootstyle="info").grid(row=0, column=3, padx=5, pady=5)
 
@@ -912,6 +913,25 @@ class InventoryApp:
             tree.insert("", "end", values=log)
         tree.pack(fill="both", expand=True)
         ttk.Button(self.report_display, text="Export to CSV", command=lambda: self.export_to_csv(logs, "audit_logs.csv"), bootstyle="success").pack(pady=5)
+
+    def stock_movements_report(self):
+        for widget in self.report_display.winfo_children():
+            widget.destroy()
+        
+        columns = ("Movement ID", "Product ID", "Quantity", "From Location", "To Location", "Movement Type", "Timestamp")
+        tree = ttk.Treeview(self.report_display, columns=columns, show="headings", bootstyle="primary")
+
+        for col in columns:
+            tree.heading(col, text=col)
+
+        self.db.cursor.execute('SELECT movement_id, product_id, quantity, from_location, to_location, movement_type, timestamp FROM stock_movements')
+        movements = self.db.cursor.fetchall()
+
+        for movement in movements:
+            tree.insert("", "end", values=movement)
+        
+        tree.pack(fill="both", expand=True)
+        ttk.Button(self.report_display, text="Export to CSV", command=lambda: self.export_to_csv(movements, "stock_movements.csv"), bootstyle="success").pack(pady=5)
 
     def export_to_csv(self, data, filename):
         try:
